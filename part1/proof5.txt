@@ -1,0 +1,8 @@
+{
+  let {x1}_admin = c1 in
+  let {x2}_admin = c2 in
+  let {x3}_admin = c3 in
+  x2 [fpf] [ghc6017] [runming] x3 c4
+}_admin
+:
+admin says mayOpen(runming, ghc6017)

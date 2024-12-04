@@ -1,0 +1,9 @@
+{
+  let {x1}_admin = r1 in
+  let {x2}_admin = r2 in
+  let v1 = x2 [file1] [secret] [bob] [topsecret] r3 r5 ax2 in
+  let v2 = x1 [bob] [file1] [alice] v1 r4 r6 in
+  v2
+}_admin
+:
+admin says mayRead(bob, file1)
