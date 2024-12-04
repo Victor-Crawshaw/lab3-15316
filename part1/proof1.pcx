@@ -1,0 +1,14 @@
+{
+  let {a4}_admin = adm4 in
+  let {a6}_admin = adm6 in
+  let {a8}_admin = adm8 in
+  let {a9}_admin = adm9 in
+
+  let v1 = a4 [jccrawsh] [jccrawsh] {let {j1}_jccrawsh = p1 in j1}_jccrawsh in
+  let v2 = a8 [jccrawsh] {let {j2}_jccrawsh = p2 in j2}_jccrawsh in
+  let v3 = a9 [jccrawsh] [hw1] v2 {let {j3}_jccrawsh = p3 in j3}_jccrawsh in
+  let v4 = a6 [jccrawsh] [jccrawsh] [hw1] v1 v3 in
+  v4
+}_admin
+:
+admin says mayGrade(jccrawsh, jccrawsh, hw1)
