@@ -48,8 +48,10 @@ def subst_form(x: pca.Variable, t: pca.Term, p: pca.Form) -> pca.Form:
         return term
     
     if isinstance(p, pca.Atom):
-        new_terms = [subst_term(term) for term in p.terms]
-        return pca.Atom(predicate=p.predicate, terms=new_terms)
+        return pca.Atom(
+            predicate=p.predicate, 
+            terms=[subst_term(term) for term in p.terms]
+        )
     
     elif isinstance(p, pca.Implies):
         return pca.Implies(
@@ -58,9 +60,8 @@ def subst_form(x: pca.Variable, t: pca.Term, p: pca.Form) -> pca.Form:
         )
     
     elif isinstance(p, pca.Says):
-        new_agent = subst_term(p.agent)
         return pca.Says(
-            agent=new_agent,
+            agent=subst_term(p.agent),
             formula=subst_form(x, t, p.formula)
         )
     
