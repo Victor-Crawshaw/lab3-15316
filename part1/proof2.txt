@@ -1,0 +1,12 @@
+{
+  let {x1}_journal = j1 in
+  let {x2}_journal = j2 in
+  let {x3}_journal = j3 in
+  let {x4}_journal = j4 in
+  let v1 = x1 [derek] [fpf] [article1] x4 d1 in
+  let v2 = x2 [fpf] [article1] [fpf] [derek] x4 v1 d3 v1 d3 in
+  let v3 = x3 [derek] [article1] x4 v2 in
+  v3
+}_journal
+:
+journal says publish(article1)
