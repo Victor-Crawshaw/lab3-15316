@@ -1,0 +1,13 @@
+{
+  let {a3}_hipaa = h3 in
+  let {a5}_hipaa = h5 in
+  let {a6}_hipaa = h6 in
+  let {a7}_hipaa = h7 in
+
+  let v1 = a5 [upmc] [fpf] a7 {let {b1}_upmc = u2 in b1}_upmc in
+  let v2 = a6 [upmc] [abo] [fpf] a7 {let {b2}_upmc = u1 in b2}_upmc v1 in
+  let v3 = a3 [fpf] [abo] [fpfmr] v2 {let {b3}_upmc = u3 in b3}_upmc in
+  v3
+}_hipaa
+:
+hipaa says mayRead(abo, fpfmr)
