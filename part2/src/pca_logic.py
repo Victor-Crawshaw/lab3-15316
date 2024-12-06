@@ -153,3 +153,4 @@ def stringify_proof(m: Proof) -> str:
 
 def stringify_typing(proof : Proof, form : Form) -> str:
     return f"{stringify_proof(proof)}\n : \n{stringify_form(form)}"
+    

@@ -4,24 +4,50 @@ import pca_logic as pca
 count = 0
 
 def fresh_var(x: pca.Variable) -> pca.Variable:
+    """
+    Generate a fresh variable with a unique name based on the input variable.
+    
+    Args:
+        x (Variable): The base variable to create a fresh version of.
+        
+    Returns:
+        Variable: A new variable with a unique name based on x.
+    """
     global count
     x_prime_id = f"{x.id}'{count}"
     count += 1
     return pca.Variable(x_prime_id)
 
 def eq_term(s: pca.Term, t: pca.Term) -> bool:
-    # Both terms must be of the same type (Variable or Constant)
+    """
+    Check if two terms are equal.
+    
+    Args:
+        s (Term): First term to compare.
+        t (Term): Second term to compare.
+        
+    Returns:
+        bool: True if the terms are equal, False otherwise.
+    """
     if type(s) != type(t):
         return False
     
-    # Compare IDs for variables or names for constants
     if isinstance(s, pca.Variable):
         return s.id == t.id
     else:  # Constant
         return s.name == t.name
 
 def eq_form(p: pca.Form, q: pca.Form) -> bool:
-    # Must be same type of formula
+    """
+    Check if two formulas are equal.
+    
+    Args:
+        p (Form): First formula to compare.
+        q (Form): Second formula to compare.
+        
+    Returns:
+        bool: True if the formulas are equal, False otherwise.
+    """
     if type(p) != type(q):
         return False
     
@@ -47,6 +73,17 @@ def eq_form(p: pca.Form, q: pca.Form) -> bool:
     return False
 
 def subst_form(x: pca.Variable, t: pca.Term, p: pca.Form) -> pca.Form:
+    """
+    Substitute a term for a variable in a formula.
+    
+    Args:
+        x (Variable): The variable to substitute.
+        t (Term): The term to substitute with.
+        p (Form): The formula to perform substitution in.
+        
+    Returns:
+        Form: A new formula with all occurrences of x replaced by t.
+    """
     def subst_term(term: pca.Term) -> pca.Term:
         if isinstance(term, pca.Variable) and term.id == x.id:
             return t
@@ -71,7 +108,6 @@ def subst_form(x: pca.Variable, t: pca.Term, p: pca.Form) -> pca.Form:
         )
     
     elif isinstance(p, pca.Forall):
-        # Don't substitute if the variable is bound by this quantifier
         if eq_term(p.variable, x):
             return p
         return pca.Forall(
@@ -80,3 +116,4 @@ def subst_form(x: pca.Variable, t: pca.Term, p: pca.Form) -> pca.Form:
         )
     
     return p
+    

@@ -111,7 +111,6 @@ def verify(gamma: pca.Policy, m: pca.Proof, p: pca.Form):
             # cut rule
             p1 = synth(gamma, m.m)
             new_decl = pca.Declaration(constant=pca.Constant(m.v.name), formula=p1)
-            #print(m.v.name + " : " + pca.stringify_form(p1))
             check(gamma + [new_decl], m.n, p)
 
         elif isinstance(p, pca.Affirms):
@@ -123,11 +122,9 @@ def verify(gamma: pca.Policy, m: pca.Proof, p: pca.Form):
             # saysR rule
             if not isinstance(p, pca.Says):
                 raise VerifyException("Wrap must check against says type")
-            if not eq_term(m.a, p.agent):
-                raise VerifyException(f"Agent mismatch")
+            if not eq_term(p.agent, m.a):
+                raise VerifyException(f"Agent mismatch: expected {m.a}, got {p.agent}")
             new_aff = pca.Affirms(agent=p.agent, formula=p.formula)
-            print(p.agent.name + " aff" + pca.stringify_form(p.formula))
-            print()
             check(gamma, m.m, new_aff)
         
         elif isinstance(m, pca.LetWrap):
@@ -138,10 +135,7 @@ def verify(gamma: pca.Policy, m: pca.Proof, p: pca.Form):
             p1 = synth(gamma, m)
             if not eq_form(p1, p):
                 raise VerifyException(f"Type mismatch: expected {p}, got {p1}")
-    
-    
-    # First check that the policy is well-formed
+                
     check_policy(gamma)
-    
-    # Then verify the proof against the type
     check(gamma, m, p)
+    
