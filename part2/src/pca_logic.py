@@ -45,6 +45,11 @@ class Forall(Form):
     variable: Variable
     formula: Form
 
+@dataclass
+class Affirms(Form):
+    agent: Term
+    formula: Form
+
 
 @dataclass
 class Ante(Token):

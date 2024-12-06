@@ -36,9 +36,10 @@ def check_policy(gamma: pca.Policy):
         bound_vars: Set[str] = set()
         def check_vars(form: pca.Form, bound: Set[str]):
             if isinstance(form, pca.Atom):
-                for term in form.terms:
-                    if isinstance(term, pca.Variable) and term.id not in bound:
-                        raise VerifyException(f"Unbound variable {term.id}")
+                if form.terms is not None:
+                    for term in form.terms:
+                        if isinstance(term, pca.Variable) and term.id not in bound:
+                            raise VerifyException(f"Unbound variable {term.id}")
             elif isinstance(form, pca.Says):
                 if isinstance(form.agent, pca.Variable) and form.agent.id not in bound:
                     raise VerifyException(f"Unbound variable {form.agent.id}")
@@ -96,44 +97,48 @@ def verify(gamma: pca.Policy, m: pca.Proof, p: pca.Form):
     
     def check(gamma: pca.Policy, m: pca.Proof, p: pca.Form):
         """Check if a proof matches a type (⇐ rules)"""
-        if isinstance(m, pca.Wrap):
-            # saysR rule
-            if not isinstance(p, pca.Says):
-                raise VerifyException("Wrap must check against says type")
-            check_aff(gamma, m.m, p.agent, p.formula)
-        
-        elif isinstance(m, pca.LetWrap):
+
+        if isinstance(m, pca.LetWrap) and isinstance(p, pca.Affirms):
             # saysE rule
             p1 = synth(gamma, m.m)
             if not isinstance(p1, pca.Says):
                 raise VerifyException("Let wrap's first term must synthesize to says")
-            if not isinstance(p, pca.Says):
-                raise VerifyException("Let wrap must check against says type")
-            if not eq_term(p.agent, m.a):
-                raise VerifyException("Let wrap agent mismatch")
-            
             # Add the unwrapped formula to context and check the body
             new_decl = pca.Declaration(constant=pca.Constant(m.v.name), formula=p1.formula)
-            check_aff(gamma + [new_decl], m.n, p.agent, p.formula)
-        
+            check(gamma + [new_decl], m.n, p)
+
         elif isinstance(m, pca.Let):
             # cut rule
             p1 = synth(gamma, m.m)
             new_decl = pca.Declaration(constant=pca.Constant(m.v.name), formula=p1)
+            #print(m.v.name + " : " + pca.stringify_form(p1))
             check(gamma + [new_decl], m.n, p)
+
+        elif isinstance(p, pca.Affirms):
+            # aff rule
+            check(gamma, m, p.formula)
         
+            
+        elif isinstance(m, pca.Wrap):
+            # saysR rule
+            if not isinstance(p, pca.Says):
+                raise VerifyException("Wrap must check against says type")
+            if not eq_term(m.a, p.agent):
+                raise VerifyException(f"Agent mismatch")
+            new_aff = pca.Affirms(agent=p.agent, formula=p.formula)
+            print(p.agent.name + " aff" + pca.stringify_form(p.formula))
+            print()
+            check(gamma, m.m, new_aff)
+        
+        elif isinstance(m, pca.LetWrap):
+            raise VerifyException("Let without affirmations")
+         
         else:
             # ⇒/⇐ rule
             p1 = synth(gamma, m)
             if not eq_form(p1, p):
                 raise VerifyException(f"Type mismatch: expected {p}, got {p1}")
     
-    def check_aff(gamma: pca.Policy, m: pca.Proof, agent: pca.Term, p: pca.Form):
-        """Check affirmation judgment"""
-        try:
-            check(gamma, m, p)
-        except VerifyException as e:
-            raise VerifyException(f"In affirmation by {agent}: {e}")
     
     # First check that the policy is well-formed
     check_policy(gamma)

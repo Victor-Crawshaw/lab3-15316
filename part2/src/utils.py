@@ -26,8 +26,13 @@ def eq_form(p: pca.Form, q: pca.Form) -> bool:
         return False
     
     if isinstance(p, pca.Atom):
-        return (eq_term(p.predicate, q.predicate) and 
-                len(p.terms) == len(q.terms) and
+        if not eq_term(p.predicate, q.predicate):
+               return False
+        if (p.terms is None and q.terms is not None) or (p.terms is not None and q.terms is None):
+            return False
+        if p.terms is None and q.terms is None:
+            return True
+        return (len(p.terms) == len(q.terms) and
                 all(eq_term(s, t) for s, t in zip(p.terms, q.terms)))
     
     elif isinstance(p, pca.Implies):

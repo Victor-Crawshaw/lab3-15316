@@ -1,6 +1,7 @@
 import sys
 from parse import parse_policy, parse_typing
 from verify import check_policy, verify, VerifyException
+import traceback
 from pca_logic import (
     stringify_policy,
     stringify_typing
@@ -49,6 +50,7 @@ def run(cmd: CmdLineArgs):
         else:
             print(str(e))
             print("error")
+            traceback.print_exc()
             sys.exit(ServeExitState.ERROR)
         
 
